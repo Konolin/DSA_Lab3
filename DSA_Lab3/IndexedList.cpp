@@ -70,6 +70,7 @@ void IndexedList::addToEnd(TElem e) {
 }
 
 void IndexedList::addToPosition(int pos, TElem e) {
+    // TODO - Implementation
     if (pos < 0) throw std::exception();
 
     if (firstEmpty == -1) resize(2);
