@@ -11,6 +11,7 @@ IndexedList::IndexedList() {
     elements = new TElem[capacity];
     next = new int[capacity];
 
+    // set default positions for the next elements
     for (int index = 0; index < capacity; index++)
         next[index] = index + 1;
     next[capacity - 1] = -1;
@@ -19,10 +20,12 @@ IndexedList::IndexedList() {
 int IndexedList::size() const {
     if (isEmpty()) return 0;
 
+    // start at the head of the SLLA
     int size = 1;
     int currentIndex = head;
     int nextIndex = next[currentIndex];
 
+    // go to the next element and increase the size, until there is no next element
     while (nextIndex != -1) {
         size++;
         currentIndex = nextIndex;
@@ -38,15 +41,19 @@ bool IndexedList::isEmpty() const {
 }
 
 TElem IndexedList::getElement(int pos) const {
+    // check if "pos" is valid
     if (pos < 0) throw std::exception();
     if (pos >= capacity) throw std::exception();
     
+    // start at the head and search for "pos" until it's found or the end of the SLLA is reached
     int currentPosition = head;
     while (currentPosition != pos && next[currentPosition] != -1) 
         currentPosition = next[currentPosition];
+   
+    // throw exception if "pos" was not found
+    if (currentPosition != pos) throw std::exception();
     
-    if (currentPosition == pos) return elements[currentPosition];
-    else throw std::exception();
+    return elements[currentPosition];
 }
 
 TElem IndexedList::setElement(int pos, TElem e) {
@@ -55,23 +62,28 @@ TElem IndexedList::setElement(int pos, TElem e) {
 }
 
 void IndexedList::addToEnd(TElem e) {
-    if (isEmpty()) { // insert first element
-        int newPosition = firstEmpty;
-        elements[newPosition] = e;
-        firstEmpty = next[newPosition];
-        next[newPosition] = head;
-        head = newPosition;
-    } else {
-        if (firstEmpty == -1) resize(2);
-
-        int lastOccupiedPosition = head;
-        while (next[lastOccupiedPosition] != -1)
-            lastOccupiedPosition = next[lastOccupiedPosition];
-
+    if (isEmpty()) {
+        // insert first element in the SLLA position
         int newPosition = firstEmpty;
         elements[newPosition] = e;
         firstEmpty = next[newPosition];
         next[newPosition] = -1;
+        head = newPosition;
+    } else {
+        // check if there is need for a resize
+        if (firstEmpty == -1) resize(2);
+
+        // look for the last occupied position
+        int lastOccupiedPosition = head;
+        while (next[lastOccupiedPosition] != -1)
+            lastOccupiedPosition = next[lastOccupiedPosition];
+
+        // insert the element
+        int newPosition = firstEmpty;
+        elements[newPosition] = e;
+        firstEmpty = next[newPosition];
+        next[newPosition] = -1;
+        // links the last element of the SLLA with the new element
         next[lastOccupiedPosition] = newPosition;
     }
 }
