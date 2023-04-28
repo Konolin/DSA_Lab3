@@ -38,8 +38,15 @@ bool IndexedList::isEmpty() const {
 }
 
 TElem IndexedList::getElement(int pos) const {
-    //TODO - Implementation
-    return NULL_TELEM;
+    if (pos < 0) throw std::exception();
+    if (pos >= capacity) throw std::exception();
+    
+    int currentPosition = head;
+    while (currentPosition != pos && next[currentPosition] != -1) 
+        currentPosition = next[currentPosition];
+    
+    if (currentPosition == pos) return elements[currentPosition];
+    else throw std::exception();
 }
 
 TElem IndexedList::setElement(int pos, TElem e) {
