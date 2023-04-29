@@ -89,27 +89,46 @@ void IndexedList::addToEnd(TElem e) {
 }
 
 void IndexedList::addToPosition(int pos, TElem e) {
-    // TODO - Implementation
+    // check if the position is valid
     if (pos < 0) throw std::exception();
 
+    // resize if necessary
     if (firstEmpty == -1) resize(2);
 
+    // insert the new element on the first empty position
     int newPosition = firstEmpty;
     firstEmpty = next[firstEmpty];
     elements[newPosition] = e;
     next[newPosition] = -1;
 
+    // add element on the first potion (change head)
     if (pos == 0) {
+        // add the first element of the container
         if (head == -1) {
             head = newPosition;
+        // add a new first element
         } else {
             next[newPosition] = head;
             head = newPosition;
         }
+    // add in the middle of the container
     } else {
+        // find the pos-th position
+        int currentPosition = 0;
+        int currentNode = head;
 
+        // stop at the end of the container or when the position before "pos" is found
+        while (currentNode != -1 && currentPosition < pos - 1) {
+            currentPosition++;
+            currentNode = next[currentNode];
+        }
+
+        // if the position is valid, add the new element
+        if (currentNode != -1) {
+            next[newPosition] = next[currentPosition];
+            next[currentPosition] = newPosition;
+        } else throw std::exception();
     }
-
 }
 
 TElem IndexedList::remove(int pos) {
