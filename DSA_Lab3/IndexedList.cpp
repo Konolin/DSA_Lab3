@@ -158,7 +158,7 @@ void IndexedList::resize(float factor) {
     // move new elements in the new arrays
     for (int index = 0; index < capacity; index++) {
         newElements[index] = elements[index];
-        newLinks[index] = newLinks[index];
+        newLinks[index] = links[index];
     }
 
     // initialize the empty next indexes
