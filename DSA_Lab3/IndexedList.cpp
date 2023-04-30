@@ -174,4 +174,7 @@ void IndexedList::resize(float factor) {
     elements = newElements;
     next = newLinks;
     capacity = newCapacity;
+
+    delete[] newElements;
+    delete[] newLinks;
 }
