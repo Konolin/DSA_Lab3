@@ -44,15 +44,15 @@ TElem IndexedList::getElement(int pos) const {
     // check if "pos" is valid
     if (pos < 0) throw std::exception();
     if (pos >= capacity) throw std::exception();
-    
+
     // start at the head and search for "pos" until it's found or the end of the SLLA is reached
     int currentPosition = head;
-    while (currentPosition != pos && next[currentPosition] != -1) 
+    while (currentPosition != pos && next[currentPosition] != -1)
         currentPosition = next[currentPosition];
-   
+
     // throw exception if "pos" was not found
     if (currentPosition != pos) throw std::exception();
-    
+
     return elements[currentPosition];
 }
 
@@ -111,7 +111,7 @@ void IndexedList::addToPosition(int pos, TElem e) {
             next[newPosition] = head;
             head = newPosition;
         }
-    // add in the middle of the container
+        // add in the middle of the container
     } else {
         // find the pos-th position
         int currentPosition = 0;
@@ -125,8 +125,8 @@ void IndexedList::addToPosition(int pos, TElem e) {
 
         // if the position is valid, add the new element
         if (currentNode != -1) {
-            next[newPosition] = next[currentPosition];
-            next[currentPosition] = newPosition;
+            next[newPosition] = next[currentNode];
+            next[currentNode] = newPosition;
         } else throw std::exception();
     }
 }
@@ -153,18 +153,18 @@ IndexedList::~IndexedList() {
 void IndexedList::resize(float factor) {
     int newCapacity = capacity * factor;
     auto newElements = new TElem[newCapacity];
-    auto newLinks = new int[newCapacity];
+    auto newNext = new int[newCapacity];
 
     // move new elements in the new arrays
     for (int index = 0; index < capacity; index++) {
         newElements[index] = elements[index];
-        newLinks[index] = links[index];
+        newNext[index] = next[index];
     }
 
     // initialize the empty next indexes
     for (int index = capacity; index < newCapacity; index++)
-        newLinks[index] = index + 1;
-    newLinks[newCapacity - 1] = -1;
+        newNext[index] = index + 1;
+    newNext[newCapacity - 1] = -1;
     firstEmpty = capacity;
 
     // replace old arrays with the new ones
@@ -172,9 +172,6 @@ void IndexedList::resize(float factor) {
     delete[] next;
 
     elements = newElements;
-    next = newLinks;
+    next = newNext;
     capacity = newCapacity;
-
-    delete[] newElements;
-    delete[] newLinks;
 }
