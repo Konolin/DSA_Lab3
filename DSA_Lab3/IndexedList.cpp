@@ -156,8 +156,7 @@ int IndexedList::search(TElem e) const{
     }
     if (elements[currentPosition] == e)
         return currentPosition;
-    else
-        return -1;
+    return -1;
 }
 
 ListIterator IndexedList::iterator() const {
