@@ -16,9 +16,10 @@ void ListIterator::next() {
 }
 
 bool ListIterator::valid() const {
-    return index != -1 && index < list.capacity;
+    return index != -1;
 }
 
 TElem ListIterator::getCurrent() const {
+    if (!valid()) throw std::exception();
     return list.elements[index];
 }
