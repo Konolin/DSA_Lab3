@@ -151,9 +151,9 @@ TElem IndexedList::remove(int pos) {
 int IndexedList::search(TElem e) const{
     int currentPosition = head;
     
-    while (elements[currentPosition] != e && next[currentPosition] != -1){
+    while (elements[currentPosition] != e && next[currentPosition] != -1)
         currentPosition = next[currentPosition];
-    }
+    
     if (elements[currentPosition] == e)
         return currentPosition;
     return -1;
