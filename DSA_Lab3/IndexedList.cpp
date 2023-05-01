@@ -144,8 +144,38 @@ void IndexedList::addToPosition(int pos, TElem e) {
 }
 
 TElem IndexedList::remove(int pos) {
-    //TODO - Implementation
-    return NULL_TELEM;
+    if (pos < 0 || pos >= size())
+        throw std::exception();
+
+    int currentPosition = head;
+    int previousPosition = -1;
+    TElem oldValue;
+
+    while (currentPosition != pos && next[currentPosition] != -1){
+        previousPosition = currentPosition;
+        currentPosition = next[currentPosition];
+    }
+
+    if (currentPosition != pos)
+        throw std::exception();
+    else{
+        oldValue = elements[currentPosition];
+        // if the first element needs to be removed
+        if (currentPosition == head)
+            head = next[currentPosition];
+        else
+            next[previousPosition] = next[currentPosition];
+
+        // update empty position
+        next[currentPosition] = firstEmpty;
+        firstEmpty = currentPosition;
+    }
+
+    // check if resize is necessary
+    if (size() < capacity/4)
+        resize(0.5);
+
+    return oldValue;
 }
 
 int IndexedList::search(TElem e) const{
