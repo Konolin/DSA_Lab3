@@ -4,7 +4,7 @@
 #include "ListIterator.h"
 
 IndexedList::IndexedList() {
-    capacity = 10;
+    capacity = 400;
     head = -1;
     firstEmpty = 0;
 
@@ -91,6 +91,7 @@ void IndexedList::addToEnd(TElem e) {
 void IndexedList::addToPosition(int pos, TElem e) {
     // check if the position is valid
     if (pos < 0) throw std::exception();
+    if (pos >= size()) throw std::exception();
 
     // resize if necessary
     if (firstEmpty == -1) resize(2);
@@ -117,17 +118,14 @@ void IndexedList::addToPosition(int pos, TElem e) {
         int currentPosition = 0;
         int currentNode = head;
 
-        // stop at the end of the container or when the position before "pos" is found
-        while (currentNode != -1 && currentPosition < pos - 1) {
+        // stop when the position before "pos" is found
+        while (currentPosition < pos - 1) {
             currentPosition++;
             currentNode = next[currentNode];
         }
 
-        // if the position is valid, add the new element
-        if (currentNode != -1) {
-            next[newPosition] = next[currentNode];
-            next[currentNode] = newPosition;
-        } else throw std::exception();
+        next[newPosition] = next[currentNode];
+        next[currentNode] = newPosition;
     }
 }
 
