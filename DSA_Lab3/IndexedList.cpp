@@ -178,14 +178,17 @@ TElem IndexedList::remove(int pos) {
     return oldValue;
 }
 
-int IndexedList::search(TElem e) const{
-    int currentPosition = head;
-    
-    while (elements[currentPosition] != e && next[currentPosition] != -1)
-        currentPosition = next[currentPosition];
-    
-    if (elements[currentPosition] == e)
-        return currentPosition;
+int IndexedList::search(TElem e) const {
+    int currentElement = head;
+    int currentPosition = 0;
+
+    while (currentElement != -1) {
+        if (elements[currentElement] == e)
+            return currentPosition;
+        currentElement = next[currentElement];
+        currentPosition++;
+    }
+
     return -1;
 }
 
