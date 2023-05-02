@@ -2,9 +2,10 @@
 
 #include "IndexedList.h"
 #include "ListIterator.h"
+#include <iostream>
 
 IndexedList::IndexedList() {
-    capacity = 400;
+    capacity = 10;
     head = -1;
     firstEmpty = 0;
 
@@ -42,36 +43,39 @@ bool IndexedList::isEmpty() const {
 
 TElem IndexedList::getElement(int pos) const {
     // check if "pos" is valid
-    if (pos < 0) throw std::exception();
-    if (pos >= capacity) throw std::exception();
+    if (pos < 0 || pos >= capacity) throw std::exception();
 
     // start at the head and search for "pos" until it's found or the end of the SLLA is reached
-    int currentPosition = head;
-    while (currentPosition != pos && next[currentPosition] != -1)
-        currentPosition = next[currentPosition];
+    int currentIndex = head;
+    int currentPosition = 0;
+    while (currentPosition != pos && currentIndex != -1) {
+        currentIndex = next[currentIndex];
+        currentPosition++;
+    }
 
     // throw exception if "pos" was not found
     if (currentPosition != pos) throw std::exception();
 
-    return elements[currentPosition];
+    return elements[currentIndex];
 }
 
 TElem IndexedList::setElement(int pos, TElem e) {
-    if (pos < 0 || pos >= capacity)
-        throw std::exception();
-    
-    int currentPosition = head;
+    if (pos < 0 || pos >= capacity) throw std::exception();
+
+    int currentIndex = head;
+    int currentPosition = 0;
     TElem oldValue;
-    
-    while (currentPosition != pos && next[currentPosition] != -1){
-        currentPosition = next[currentPosition];
+
+    while (currentPosition != pos && currentIndex != -1) {
+        currentIndex = next[currentIndex];
+        currentPosition++;
     }
-    if (currentPosition != pos)
-        throw std::exception();
-    else {
-        oldValue = elements[currentPosition];
-        elements[currentPosition] = e;
-    }
+
+    if (currentPosition == pos) {
+        oldValue = elements[currentIndex];
+        elements[currentIndex] = e;
+    } else throw std::exception();
+
     return oldValue;
 }
 
@@ -121,7 +125,7 @@ void IndexedList::addToPosition(int pos, TElem e) {
         // add the first element of the container
         if (head == -1) {
             head = newPosition;
-        // add a new first element
+            // add a new first element
         } else {
             next[newPosition] = head;
             head = newPosition;
@@ -144,38 +148,37 @@ void IndexedList::addToPosition(int pos, TElem e) {
 }
 
 TElem IndexedList::remove(int pos) {
-    if (pos < 0 || pos >= size())
-        throw std::exception();
+    if (pos < 0 || pos >= size()) throw std::exception();
 
-    int currentPosition = head;
-    int previousPosition = -1;
-    TElem oldValue;
+    int currentIndex = head;
+    int currentPosition = 0;
+    int previousIndex = -1;
+    TElem removedValue;
 
-    while (currentPosition != pos && next[currentPosition] != -1){
-        previousPosition = currentPosition;
-        currentPosition = next[currentPosition];
+    while (currentPosition != pos && currentIndex != -1) {
+        previousIndex = currentIndex;
+        currentIndex = next[currentIndex];
+        currentPosition++;
     }
 
-    if (currentPosition != pos)
-        throw std::exception();
-    else{
-        oldValue = elements[currentPosition];
-        // if the first element needs to be removed
-        if (currentPosition == head)
-            head = next[currentPosition];
-        else
-            next[previousPosition] = next[currentPosition];
+    if (currentPosition != pos) throw std::exception();
 
-        // update empty position
-        next[currentPosition] = firstEmpty;
-        firstEmpty = currentPosition;
-    }
+    removedValue = elements[currentIndex];
+
+    if (currentIndex == head) {
+        if (size() == 1) head = -1;
+        else head = next[currentIndex];
+    } else next[previousIndex] = next[currentIndex];
+
+    // update empty position
+    next[currentIndex] = firstEmpty;
+    firstEmpty = currentIndex;
 
     // check if resize is necessary
-    if (size() < capacity/4)
-        resize(0.5);
+//    if (size() < capacity / 4)
+//        resize(0.5);
 
-    return oldValue;
+    return removedValue;
 }
 
 int IndexedList::search(TElem e) const {
