@@ -262,6 +262,34 @@ void IndexedList::resize(float factor) {
     capacity = newCapacity;
 }
 
+void IndexedList::resize_down() {
+    int newCapacity = capacity/2;
+
+    auto newElements = new TElem[newCapacity];
+    auto newNext = new int[newCapacity];
+
+    // Move existing elements to the new arrays
+    for (int index = 0; index < size(); index++) {
+        newElements[index] = elements[index];
+        newNext[index] = next[index];
+    }
+
+    // Initialize the empty next indexes
+    for (int index = size(); index < newCapacity; index++) {
+        newNext[index] = index + 1;
+    }
+    newNext[newCapacity - 1] = -1;
+    firstEmpty = size();
+
+    // Replace old arrays with the new ones
+    delete[] elements;
+    delete[] next;
+
+    elements = newElements;
+    next = newNext;
+    capacity = newCapacity;
+}
+
 //void IndexedList::resize(float factor) {
 //    int newCapacity = capacity * factor;
 //    auto newElements = new TElem[newCapacity];
