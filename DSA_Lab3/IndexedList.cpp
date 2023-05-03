@@ -2,8 +2,9 @@
 
 #include "IndexedList.h"
 #include "ListIterator.h"
-#include <iostream>
 
+
+// worst = average = best = θ(n)
 IndexedList::IndexedList() {
     capacity = 10;
     head = -1;
@@ -18,6 +19,8 @@ IndexedList::IndexedList() {
     next[capacity - 1] = -1;
 }
 
+
+// worst = average = best = θ(n)
 int IndexedList::size() const {
     if (isEmpty()) return 0;
 
@@ -36,11 +39,14 @@ int IndexedList::size() const {
     return size;
 }
 
-
+// worst = average = best = θ(1)
 bool IndexedList::isEmpty() const {
     return head == -1;
 }
 
+
+// worst = average = θ(n)
+// best = θ(1)
 TElem IndexedList::getElement(int pos) const {
     // check if "pos" is valid
     if (pos < 0 || pos >= capacity) throw std::exception();
@@ -59,26 +65,33 @@ TElem IndexedList::getElement(int pos) const {
     return elements[currentIndex];
 }
 
+
+// worst = average = θ(n)
+// best = θ(1)
 TElem IndexedList::setElement(int pos, TElem e) {
-    if (pos < 0 || pos >= capacity) throw std::exception();
+    // check if pos is valid
+    if (pos < 0 || pos >= size()) throw std::exception();
 
     int currentIndex = head;
     int currentPosition = 0;
     TElem oldValue;
 
+    // find the position
     while (currentPosition != pos && currentIndex != -1) {
         currentIndex = next[currentIndex];
         currentPosition++;
     }
 
-    if (currentPosition == pos) {
-        oldValue = elements[currentIndex];
-        elements[currentIndex] = e;
-    } else throw std::exception();
+    // add element
+    oldValue = elements[currentIndex];
+    elements[currentIndex] = e;
 
     return oldValue;
 }
 
+
+// worst = average = θ(n)
+// best = θ(1)
 void IndexedList::addToEnd(TElem e) {
     if (isEmpty()) {
         // insert first element in the SLLA position
@@ -106,6 +119,8 @@ void IndexedList::addToEnd(TElem e) {
     }
 }
 
+// worst = average = θ(n)
+// best = θ(1)
 void IndexedList::addToPosition(int pos, TElem e) {
     // check if the position is valid
     if (pos < 0) throw std::exception();
@@ -147,7 +162,10 @@ void IndexedList::addToPosition(int pos, TElem e) {
     }
 }
 
+// worst = average = θ(n)
+// best = θ(1)
 TElem IndexedList::remove(int pos) {
+    // check if pos is valid
     if (pos < 0 || pos >= size()) throw std::exception();
 
     int currentIndex = head;
@@ -155,16 +173,19 @@ TElem IndexedList::remove(int pos) {
     int previousIndex = -1;
     TElem removedValue;
 
+    // find the position in list
     while (currentPosition != pos && currentIndex != -1) {
         previousIndex = currentIndex;
         currentIndex = next[currentIndex];
         currentPosition++;
     }
 
+    // throw exception if pso is not found
     if (currentPosition != pos) throw std::exception();
 
     removedValue = elements[currentIndex];
 
+    // check if head needs to be modified
     if (currentIndex == head) {
         if (size() == 1) head = -1;
         else head = next[currentIndex];
@@ -181,11 +202,16 @@ TElem IndexedList::remove(int pos) {
     return removedValue;
 }
 
+
+// worst = average = θ(n)
+// best = θ(1)
 int IndexedList::search(TElem e) const {
     int currentElement = head;
     int currentPosition = 0;
 
+    // traverse the list
     while (currentElement != -1) {
+        // if the position was found, return it
         if (elements[currentElement] == e)
             return currentPosition;
         currentElement = next[currentElement];
@@ -195,15 +221,21 @@ int IndexedList::search(TElem e) const {
     return -1;
 }
 
+
+// worst = average = best = θ(n)
 ListIterator IndexedList::iterator() const {
     return ListIterator(*this);
 }
 
+
+// worst = average = best = θ(n)
 IndexedList::~IndexedList() {
     delete[] elements;
     delete[] next;
 }
 
+
+// worst = average = best = θ(n)
 void IndexedList::resize(float factor) {
     int newCapacity = capacity * factor;
     auto newElements = new TElem[newCapacity];
@@ -229,3 +261,36 @@ void IndexedList::resize(float factor) {
     next = newNext;
     capacity = newCapacity;
 }
+
+//void IndexedList::resize(float factor) {
+//    int newCapacity = capacity * factor;
+//    auto newElements = new TElem[newCapacity];
+//    auto newNext = new int[newCapacity];
+//
+//    // initialize the empty next indexes
+//    for (int index = 0; index < newCapacity; index++) {
+//        newNext[index] = index + 1;
+//    }
+//    newNext[newCapacity - 1] = -1;
+//    firstEmpty = size();
+//
+//    // move new elements in the new arrays
+//    int oldIndex = head;
+//    int newIndex = 0;
+//    while (oldIndex != -1) {
+//        newElements[newIndex] = elements[oldIndex];
+//        newNext[newIndex] = next[oldIndex];
+//
+//        oldIndex = next[oldIndex];
+//        newIndex++;
+//    }
+//    head = 0;
+//
+//    // replace old arrays with the new ones
+//    delete[] elements;
+//    delete[] next;
+//
+//    elements = newElements;
+//    next = newNext;
+//    capacity = newCapacity;
+//}
