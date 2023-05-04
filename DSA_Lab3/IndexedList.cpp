@@ -6,7 +6,7 @@
 
 // worst = average = best = θ(n)
 IndexedList::IndexedList() {
-    capacity = 10;
+    capacity = 15;
     head = -1;
     firstEmpty = 0;
 
