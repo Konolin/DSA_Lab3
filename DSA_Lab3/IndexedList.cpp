@@ -102,7 +102,7 @@ void IndexedList::addToEnd(TElem e) {
         head = newPosition;
     } else {
         // check if there is need for a resize
-        if (firstEmpty == -1) resize(2);
+        if (firstEmpty == -1) resize_up();
 
         // look for the last occupied position
         int lastOccupiedPosition = head;
@@ -127,7 +127,7 @@ void IndexedList::addToPosition(int pos, TElem e) {
     if (pos >= size()) throw std::exception();
 
     // resize if necessary
-    if (firstEmpty == -1) resize(2);
+    if (firstEmpty == -1) resize_up();
 
     // insert the new element on the first empty position
     int newPosition = firstEmpty;
@@ -236,8 +236,8 @@ IndexedList::~IndexedList() {
 
 
 // worst = average = best = θ(n)
-void IndexedList::resize(float factor) {
-    int newCapacity = capacity * factor;
+void IndexedList::resize_up() {
+    int newCapacity = capacity * SIZE_UP_FACTOR;
     auto newElements = new TElem[newCapacity];
     auto newNext = new int[newCapacity];
 
@@ -263,8 +263,7 @@ void IndexedList::resize(float factor) {
 }
 
 void IndexedList::resize_down() {
-    int newCapacity = capacity/2;
-
+    int newCapacity = capacity / SIZE_DOWN_FACTOR;
     auto newElements = new TElem[newCapacity];
     auto newNext = new int[newCapacity];
 
@@ -282,36 +281,3 @@ void IndexedList::resize_down() {
     next = newNext;
     capacity = newCapacity;
 }
-
-//void IndexedList::resize(float factor) {
-//    int newCapacity = capacity * factor;
-//    auto newElements = new TElem[newCapacity];
-//    auto newNext = new int[newCapacity];
-//
-//    // initialize the empty next indexes
-//    for (int index = 0; index < newCapacity; index++) {
-//        newNext[index] = index + 1;
-//    }
-//    newNext[newCapacity - 1] = -1;
-//    firstEmpty = size();
-//
-//    // move new elements in the new arrays
-//    int oldIndex = head;
-//    int newIndex = 0;
-//    while (oldIndex != -1) {
-//        newElements[newIndex] = elements[oldIndex];
-//        newNext[newIndex] = next[oldIndex];
-//
-//        oldIndex = next[oldIndex];
-//        newIndex++;
-//    }
-//    head = 0;
-//
-//    // replace old arrays with the new ones
-//    delete[] elements;
-//    delete[] next;
-//
-//    elements = newElements;
-//    next = newNext;
-//    capacity = newCapacity;
-//}
