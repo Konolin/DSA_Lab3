@@ -196,8 +196,7 @@ TElem IndexedList::remove(int pos) {
     firstEmpty = currentIndex;
 
     // check if resize is necessary
-//    if (size() < capacity / 4)
-//        resize(0.5);
+    if (size() < capacity / 4) resize(0.5);
 
     return removedValue;
 }
