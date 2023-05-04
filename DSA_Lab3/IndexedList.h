@@ -15,11 +15,15 @@ private:
     int head;
     int firstEmpty;
 
+    static const int SIZE_DOWN_FACTOR = 2;
+    static const int SIZE_UP_FACTOR = 2;
+    
     //DO NOT CHANGE THIS PART
     friend class ListIterator;
 
     // modifies the capacity of the arrays
-    void resize(float factor);
+    void resize_up();
+    void resize_down();
 
 public:
     // constructor
