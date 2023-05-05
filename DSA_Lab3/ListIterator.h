@@ -22,4 +22,3 @@ public:
 
     TElem getCurrent() const;
 };
-
