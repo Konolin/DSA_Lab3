@@ -17,12 +17,13 @@ private:
 
     static const int SIZE_DOWN_FACTOR = 2;
     static const int SIZE_UP_FACTOR = 2;
-    
+
     //DO NOT CHANGE THIS PART
     friend class ListIterator;
 
     // modifies the capacity of the arrays
     void resize_up();
+
     void resize_down();
 
 public:
@@ -64,4 +65,10 @@ public:
 
     //destructor
     ~IndexedList();
+
+    //get head
+    int get_head() const;
+
+    //supplimentar function
+    void add_elements(const IndexedList& list);
 };
