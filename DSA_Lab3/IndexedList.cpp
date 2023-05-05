@@ -3,8 +3,9 @@
 #include "IndexedList.h"
 #include "ListIterator.h"
 
+//primim o lista noua ca parametru si trebuie sa adaugam toate elementele din lista actuala in lista noua
 
-// worst = average = best = θ(n)
+/**Time Complexity: Best Case, Worst Case, Average Case: θ(n)*/
 IndexedList::IndexedList() {
     capacity = 15;
     head = -1;
@@ -19,8 +20,7 @@ IndexedList::IndexedList() {
     next[capacity - 1] = -1;
 }
 
-
-// worst = average = best = θ(n)
+/**Time Complexity: Best Case, Worst Case, Average Case: θ(n)*/
 int IndexedList::size() const {
     if (isEmpty()) return 0;
 
@@ -35,26 +35,26 @@ int IndexedList::size() const {
         currentIndex = nextIndex;
         nextIndex = next[currentIndex];
     }
-
     return size;
 }
 
-// worst = average = best = θ(1)
+/**Time Complexity: Best Case, Worst Case, Average Case: θ(1)*/
 bool IndexedList::isEmpty() const {
     return head == -1;
 }
 
-
-// worst = average = θ(n)
-// best = θ(1)
+/**Time Complexity: Best Case: θ(1), when the desired element is at the first position
+                    Worst Case: θ(n), when the desired element is at the last position
+                    Average Case: θ(n)*/
 TElem IndexedList::getElement(int pos) const {
     // check if "pos" is valid
-    if (pos < 0 || pos >= capacity) throw std::exception();
+    if (pos < 0) throw std::exception();
+    if (pos >= size()) throw std::exception();
 
     // start at the head and search for "pos" until it's found or the end of the SLLA is reached
     int currentIndex = head;
     int currentPosition = 0;
-    while (currentPosition != pos && currentIndex != -1) {
+    while (currentPosition != pos && currentIndex != -1){
         currentIndex = next[currentIndex];
         currentPosition++;
     }
@@ -65,33 +65,31 @@ TElem IndexedList::getElement(int pos) const {
     return elements[currentIndex];
 }
 
-
-// worst = average = θ(n)
-// best = θ(1)
+/**Time Complexity: Best Case: θ(1), when the desired element is at the first position
+                    Worst Case: θ(n), when the desired element is at the last position
+                    Average Case: θ(n)*/
 TElem IndexedList::setElement(int pos, TElem e) {
-    // check if pos is valid
-    if (pos < 0 || pos >= size()) throw std::exception();
-
+    if (pos < 0 || pos >= size())
+        throw std::exception();
     int currentIndex = head;
     int currentPosition = 0;
     TElem oldValue;
-
-    // find the position
-    while (currentPosition != pos && currentIndex != -1) {
+    while (currentPosition != pos && currentIndex != -1){
         currentIndex = next[currentIndex];
         currentPosition++;
     }
-
-    // add element
-    oldValue = elements[currentIndex];
-    elements[currentIndex] = e;
-
+    if (currentPosition != pos)
+        throw std::exception();
+    else {
+        oldValue = elements[currentIndex];
+        elements[currentIndex] = e;
+    }
     return oldValue;
 }
 
-
-// worst = average = θ(n)
-// best = θ(1)
+/**Time Complexity: Best Case: θ(1), when it doesn't need to resize and the last occupied element is also the head
+                    Worst Case: θ(n), when it needs to resize or when the last occupied element is not the head
+                    Average Case: θ(n)*/
 void IndexedList::addToEnd(TElem e) {
     if (isEmpty()) {
         // insert first element in the SLLA position
@@ -119,8 +117,9 @@ void IndexedList::addToEnd(TElem e) {
     }
 }
 
-// worst = average = θ(n)
-// best = θ(1)
+/**Time Complexity: Best Case: θ(1), when it doesn't need to resize and the element to be added is at position 0
+                    Worst Case: θ(n), when it needs to resize or when it has to add the element to the second to last position
+                    Average Case: θ(n)*/
 void IndexedList::addToPosition(int pos, TElem e) {
     // check if the position is valid
     if (pos < 0) throw std::exception();
@@ -135,7 +134,7 @@ void IndexedList::addToPosition(int pos, TElem e) {
     elements[newPosition] = e;
     next[newPosition] = -1;
 
-    // add element on the first potion (change head)
+    // add element on the first position (change head)
     if (pos == 0) {
         // add the first element of the container
         if (head == -1) {
@@ -162,8 +161,9 @@ void IndexedList::addToPosition(int pos, TElem e) {
     }
 }
 
-// worst = average = θ(n)
-// best = θ(1)
+/**Time Complexity: Best Case: θ(1), when the desired element is at the first position
+                    Worst Case: θ(n), when the desired element is at the last position
+                    Average Case: θ(n)*/
 TElem IndexedList::remove(int pos) {
     // check if pos is valid
     if (pos < 0 || pos >= size()) throw std::exception();
@@ -180,7 +180,7 @@ TElem IndexedList::remove(int pos) {
         currentPosition++;
     }
 
-    // throw exception if pso is not found
+    // throw exception if pos is not found
     if (currentPosition != pos) throw std::exception();
 
     removedValue = elements[currentIndex];
@@ -196,45 +196,41 @@ TElem IndexedList::remove(int pos) {
     firstEmpty = currentIndex;
 
     // check if resize is necessary
-    if (size() < capacity / 4) resize(0.5);
+    if (size() <= capacity / 4)
+        resize_down();
 
     return removedValue;
 }
 
-
-// worst = average = θ(n)
-// best = θ(1)
+/**Time Complexity: Best Case: θ(1), when the desired element is at the first position
+                    Worst Case: θ(n), when the desired element is at the last position
+                    Average Case: θ(n)*/
 int IndexedList::search(TElem e) const {
     int currentElement = head;
     int currentPosition = 0;
 
-    // traverse the list
-    while (currentElement != -1) {
-        // if the position was found, return it
-        if (elements[currentElement] == e)
+    while (currentElement != -1){
+        if (elements[currentElement] == e){
             return currentPosition;
+        }
         currentElement = next[currentElement];
         currentPosition++;
     }
-
     return -1;
 }
 
-
-// worst = average = best = θ(n)
+/**Time Complexity: Best Case, Worst Case, Average Case: θ(n)*/
 ListIterator IndexedList::iterator() const {
-    return ListIterator(*this);
+    return ListIterator(*this);        
 }
 
-
-// worst = average = best = θ(n)
+/**Time Complexity: Best Case, Worst Case, Average Case: θ(1)*/
 IndexedList::~IndexedList() {
-    delete[] elements;
     delete[] next;
+    delete[] elements;
 }
 
-
-// worst = average = best = θ(n)
+/**Time Complexity: Best Case, Worst Case, Average Case: θ(n)*/
 void IndexedList::resize_up() {
     int newCapacity = capacity * SIZE_UP_FACTOR;
     auto newElements = new TElem[newCapacity];
@@ -261,8 +257,10 @@ void IndexedList::resize_up() {
     capacity = newCapacity;
 }
 
+/**Time Complexity: Best Case, Worst Case, Average Case: θ(n)*/
 void IndexedList::resize_down() {
     int newCapacity = capacity / SIZE_DOWN_FACTOR;
+
     auto newElements = new TElem[newCapacity];
     auto newNext = new int[newCapacity];
 
@@ -279,4 +277,90 @@ void IndexedList::resize_down() {
     elements = newElements;
     next = newNext;
     capacity = newCapacity;
+}
+
+/**Time Complexity: Best Case, Worst Case, Average Case: θ(1)
+
+descr: returns the head of the current list
+pre: list e IndexedList
+post: head e int
+Pseudocode:
+function get_head()
+    return head
+end-function
+ */
+int IndexedList::get_head() const{
+    return head;
+}
+
+
+/**Time Complexity: Best Case, Worst Case, Average Case: θ(n)
+
+descr: adds the elements of a list given as parameter at the end of the current list
+pre: list1 e IndexedList
+     list2 e IndexedList
+post: list1 = list1 + list2
+
+Pseudocode:
+function add_elements(IndexedList list)
+    TElem elem
+    int currentIndex = @ get_head(list)
+    while next[currentIndex] != -1
+        currentIndex = next[currentIndex]
+    end-while
+    ListIterator it(list)
+    while @ valid(it)
+        elem = @ getCurrent(it)
+        if head == -1
+            int newPosition = firstEmpty
+            elements[newPosition] = elem
+            firstEmpty = next[newPosition]
+            next[newPosition] = -1
+            head = newPosition
+        else
+            if firstEmpty == -1
+                @ resize_up();
+            end-if
+            int newPosition = firstEmpty
+            elements[newPosition] = elem
+            firstEmpty = next[newPosition]
+            next[newPosition] = -1
+            next[currentIndex] = newPosition
+        end-if
+        currentIndex = next[currentIndex]
+        @ next(it)
+    end-while
+end-function
+ */
+void IndexedList::add_elements(const IndexedList& list) {
+    TElem elem;
+    int currentIndex = list.get_head();
+    while (next[currentIndex] != -1){
+        currentIndex = next[currentIndex];
+    }
+    ListIterator it(list);
+    while(it.valid()){
+        elem = it.getCurrent();
+        if (head == -1) {
+            // insert first element in the SLLA position
+            int newPosition = firstEmpty;
+            elements[newPosition] = elem;
+            firstEmpty = next[newPosition];
+            next[newPosition] = -1;
+            head = newPosition;
+        } else {
+            // check if there is need for a resize
+            if (firstEmpty == -1) resize_up();
+
+            // insert the element
+            int newPosition = firstEmpty;
+            elements[newPosition] = elem;
+            firstEmpty = next[newPosition];
+            next[newPosition] = -1;
+            // links the last element of the SLLA with the new element
+            next[currentIndex] = newPosition;
+        }
+        currentIndex = next[currentIndex];
+        it.next();
+    }
 }
