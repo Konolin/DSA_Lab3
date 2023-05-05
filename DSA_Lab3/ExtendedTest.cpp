@@ -187,10 +187,12 @@ void testQuantity() {
 		pos++;
 		listIt.next();
 	}
+
 	for (int i = 0; i < l2.size(); i++) {
 		TElem elem = l2.getElement(i);
 		assert(l2.search(elem) == i);	
 	}
+
 	testIteratorSteps(l2);
 	for (int i = -30000; i < 300000; i++) {
 		int pos = l2.search(i);
@@ -239,10 +241,30 @@ void testRemove() {
 
 }
 
+void newFunction(){
+    cout << "Test New Function\n";
+    IndexedList list1;
+    list1.addToEnd(3);
+    list1.addToEnd(5);
+    list1.addToEnd(2);
+    IndexedList list2;
+    list2.addToEnd(7);
+    list2.addToEnd(10);
+    list2.addToEnd(14);
+    list1.add_elements(list2);
+    assert(list1.getElement(0) == 3);
+    assert(list1.getElement(1) == 5);
+    assert(list1.getElement(2) == 2);
+    assert(list1.getElement(3) == 7);
+    assert(list1.getElement(4) == 10);
+    assert(list1.getElement(5) == 14);
+}
+
 void testAllExtended() {
     testCreate();
     testAdd();
     testSetRemoveSearch();
 	testRemove();
-	testQuantity();
+    newFunction();
+    testQuantity();
 }
